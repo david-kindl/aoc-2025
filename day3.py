@@ -14,23 +14,18 @@ def get_data(io: str, mode: Literal["file", "text"] = "file") -> list[str]:
 
 
 def get_max_joltage(data: list[str], bank_len: int) -> int:
-    banks = []
-    for d in data:
+    def select_bank(d: str) -> int:
         bank = ""
         num_swaps = len(d) - bank_len
         i = 0
         while i < len(d) and len(bank) < bank_len:
-            curr = d[i]
-            swap = i
-            for j in range(i + 1, min(i + num_swaps + 1, len(d))):
-                if curr < d[j]:
-                    curr = d[j]
-                    swap = j
+            end = min(i + num_swaps + 1, len(d))
+            swap = max(range(i, end), key=lambda j: d[j])
+            bank += d[swap]
             num_swaps -= swap - i
             i = swap + 1
-            bank += curr
-        banks.append(int(bank))
-    return sum(banks)
+        return int(bank)
+    return sum(select_bank(d) for d in data)
 
 
 if __name__ == "__main__":
