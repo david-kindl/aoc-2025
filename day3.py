@@ -1,9 +1,4 @@
-
-
-TEST = """987654321111111
-811111111111119
-234234234234278
-818181911112111"""
+from sys import argv
 
 
 def get_data(io: str) -> list[str]:
@@ -12,7 +7,7 @@ def get_data(io: str) -> list[str]:
             raw_data = fl.read()
     except FileNotFoundError:
         raw_data = io
-    return [line for line in raw_data.split("\n")]
+    return [line for line in raw_data.split()]
 
 
 def get_max_joltage(data: list[str], bank_len: int) -> int:
@@ -36,6 +31,6 @@ def get_max_joltage(data: list[str], bank_len: int) -> int:
 
 
 if __name__ == "__main__":
-    d = get_data("./cache/day3.txt")
+    d = get_data(argv[1])
     print(f"part 1: {get_max_joltage(d, 2)}")
     print(f"part 2: {get_max_joltage(d, 12)}")
