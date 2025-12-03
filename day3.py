@@ -1,13 +1,16 @@
 from sys import argv
+from typing import Literal
 
 
-def get_data(io: str) -> list[str]:
-    try:
+def get_data(io: str, mode: Literal["file", "text"] = "file") -> list[str]:
+    if mode == "file":
         with open(io, mode="r", encoding="utf8") as fl:
             raw_data = fl.read()
-    except FileNotFoundError:
+    elif mode == "text":
         raw_data = io
-    return [line for line in raw_data.split()]
+    else:
+        raise ValueError(f"Unknown mode '{mode}'.")
+    return [line.strip() for line in raw_data.split() if line.strip()]
 
 
 def get_max_joltage(data: list[str], bank_len: int) -> int:
@@ -31,6 +34,6 @@ def get_max_joltage(data: list[str], bank_len: int) -> int:
 
 
 if __name__ == "__main__":
-    d = get_data(argv[1])
+    d = get_data(*argv[1:])
     print(f"part 1: {get_max_joltage(d, 2)}")
     print(f"part 2: {get_max_joltage(d, 12)}")
