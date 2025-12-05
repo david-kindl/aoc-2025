@@ -27,7 +27,6 @@ def get_data(io: str, mode: Literal["file", "text"] = "file") -> tuple[list[tupl
     ranges, ids = raw_data.split("\n\n")
     ranges = [tuple(map(int, _.split("-"))) for _ in ranges.splitlines()]
     ids = list(map(int, ids.splitlines()))
-
     return ranges, ids
 
 
@@ -41,8 +40,24 @@ def get_fresh_ids(ranges: list[tuple[int, ...]], ids: list[int]) -> list[int]:
     return fresh_ids
 
 
+def get_overlapping_ranges(ranges: list[tuple[int, ...]]) -> list[tuple[int, ...]]:
+    ranges = sorted(ranges, key=lambda x: x[0])
+    to_visit = [True for _ in range(len(ranges))]
+    merged = []
+    for i in range(len(ranges)):
+        if to_visit[i]:
+            to_visit[i] = False
+            cs, ce = ranges[i]
+            for j in range(i + 1, len(ranges)):
+                ns, ne = ranges[j]
+                if cs <= ns <= ce or ns <= cs <= ne:
+                    to_visit[j] = False
+                    cs, ce = min(cs, ns), max(ce, ne)
+            merged.append((cs, ce))
+    return merged
 
 if __name__ == "__main__":
     ranges, ids = get_data(*argv[1:])
     fresh = get_fresh_ids(ranges, ids)
     print(f"Part 1: {len(fresh)}")
+    print(f"Part 2: {sum([e + 1 - s for s, e in get_overlapping_ranges(ranges)])}")
