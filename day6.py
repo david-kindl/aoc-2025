@@ -19,9 +19,14 @@ def get_data(io: str, mode: Literal["file", "text"]="file") -> tuple[list[str], 
     return raw_data[:-1], raw_data[-1].split()
 
 
+def transpose(nums: list[str]):
+    if nums:
+        return list(map(list, zip(*(_.split() for _ in nums))))
+
+
 def stdize(part: int, nums: list[str]):
     if part == 1:
-        return list(map(list, zip(*(_.split() for _ in nums))))
+        return transpose(nums)
     elif part == 2:
         nums = list(map(list, zip(*nums)))
         nums_grp = []
