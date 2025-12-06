@@ -21,23 +21,21 @@ def get_data(io: str, mode: Literal["file", "text"]="file") -> tuple[list[str], 
 
 def stdize(part: int, nums: list[str]):
     if part == 1:
-        nums = list(map(list, zip(*(_.split() for _ in nums))))
+        return list(map(list, zip(*(_.split() for _ in nums))))
     elif part == 2:
         nums = list(map(list, zip(*nums)))
-        tmp = []
+        nums_grp = []
         curr = []
         for n in nums:
             try:
                 curr.append(int("".join(n)))
             except ValueError as e:
-                tmp.append(curr)
+                nums_grp.append(curr)
                 curr = []
-        tmp.append(curr)
-        nums = tmp
+        nums_grp.append(curr)
+        return nums_grp
     else:
         raise ValueError(f"Unknown part '{part}'.")
-
-    return nums
 
 
 def solve(part: int, nums: list[str], signs: list[str]) -> int:
