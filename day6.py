@@ -19,29 +19,36 @@ def get_data(io: str, mode: Literal["file", "text"]="file") -> tuple[list[str], 
     return raw_data[:-1], raw_data[-1].split()
 
 
-def transpose(nums: list[str]):
-    if nums:
-        return list(map(list, zip(*(_.split() for _ in nums))))
+def simple_transpose(nums: list[str]) -> list[list[int]]:
+    split_rows = [list(map(int, _.split())) for _ in nums]
+    if not split_rows:
+        return []
+    return list(map(list, zip(*split_rows)))
+
+
+def transpose_by_pos(nums: list[str]) -> list[list[int]]:
+    transposed_rows = list(map(list, zip(*nums)))
+    if not transposed_rows:
+        return []
+    nums_grp, grp = [], []
+    finished = False
+    for i, n in enumerate(transposed_rows):
+        try:
+            grp.append(int("".join(n)))
+        except ValueError as e:
+            finished = True
+        if finished or i == len(transposed_rows) - 1:
+            nums_grp.append(grp)
+            grp = []
+            finished = False
+    return nums_grp
 
 
 def stdize(part: int, nums: list[str]):
     if part == 1:
-        return transpose(nums)
+        return simple_transpose(nums)
     elif part == 2:
-        nums = list(map(list, zip(*nums)))
-        nums_grp = []
-        grp = []
-        finished = False
-        for i, n in enumerate(nums):
-            try:
-                grp.append(int("".join(n)))
-            except ValueError as e:
-                finished = True
-            if finished or i == len(nums) - 1:
-                nums_grp.append(grp)
-                grp = []
-                finished = False
-        return nums_grp
+        return transpose_by_pos(nums)
     else:
         raise ValueError(f"Unknown part '{part}'.")
 
@@ -50,7 +57,7 @@ def solve(part: int, nums: list[str], signs: list[str]) -> int:
     nums = stdize(part, nums)
     total = 0
     for i, s in enumerate(signs):
-        curr = map(int, nums[i])
+        curr = nums[i]
         if s == "+":
             total += sum(curr)
         elif s == "*":
