@@ -25,14 +25,17 @@ def stdize(part: int, nums: list[str]):
     elif part == 2:
         nums = list(map(list, zip(*nums)))
         nums_grp = []
-        curr = []
-        for n in nums:
+        grp = []
+        finished = False
+        for i, n in enumerate(nums):
             try:
-                curr.append(int("".join(n)))
+                grp.append(int("".join(n)))
             except ValueError as e:
-                nums_grp.append(curr)
-                curr = []
-        nums_grp.append(curr)
+                finished = True
+            if finished or i == len(nums) - 1:
+                nums_grp.append(grp)
+                grp = []
+                finished = False
         return nums_grp
     else:
         raise ValueError(f"Unknown part '{part}'.")
