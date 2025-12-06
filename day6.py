@@ -1,8 +1,6 @@
-import itertools
 from typing import Literal
 from operator import mul
 from functools import reduce
-from itertools import product
 from sys import argv
 
 
