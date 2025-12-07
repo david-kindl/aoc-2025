@@ -34,23 +34,6 @@ def get_data(io: str, mode: Literal["file", "text"]="file") -> list[str]:
     return [_ for _ in raw_data.split("\n") if 0 < len(_)]
 
 
-def part1(grid: list[str]) -> int:
-    counter = 0
-    for i in range(1, len(grid)):
-        repl = [c for c in grid[i]]
-        for j in range(len(grid[0])):
-            parent = grid[i - 1][j]
-            current = grid[i][j]
-            if parent in "S|":
-                if current in "|.":
-                    repl[j] = "|"
-                else:
-                    repl[j - 1], repl[j + 1] = "|", "|"
-                    counter += 1
-        grid[i] = "".join(repl)
-    return counter
-
-
 def solve(grid: list[str], start: int) -> tuple[int, int]:
     hier = [{start: 1}]
     curr_gen = 0
