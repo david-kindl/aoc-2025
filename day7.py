@@ -2,7 +2,7 @@ from typing import Literal
 from sys import argv
 
 
-def get_data(io: str, mode: Literal["file", "text"]="file") -> list[str]:
+def get_data(io: str, mode: Literal["file", "text"]="file") -> tuple[list[str], int]:
     match mode.lower():
         case "file":
             with open(io, mode="r", encoding="utf8") as fl:
@@ -11,7 +11,9 @@ def get_data(io: str, mode: Literal["file", "text"]="file") -> list[str]:
             raw_data = io
         case _:
             raise ValueError(f"Unknown mode '{mode}'.")
-    return [_ for _ in raw_data.split("\n") if 0 < len(_)]
+    grid = [_ for _ in raw_data.split("\n") if 0 < len(_)]
+    start = [i for i, val in enumerate(grid[0]) if val == "S"][0]
+    return grid, start
 
 
 def solve(grid: list[str], start: int) -> tuple[int, int]:
@@ -39,7 +41,6 @@ def solve(grid: list[str], start: int) -> tuple[int, int]:
 
 
 if __name__ == "__main__":
-    grid = get_data(argv[1:])
-    start = [i for i, val in enumerate(grid[0]) if val == "S"][0]
-    for i, val in enumerate(solve(grid, start), 1):
-        print(f"part {i}: {val}")
+    grid, start = get_data(argv[1:])
+    for part, solution in enumerate(solve(grid, start), 1):
+        print(f"part {part}: {solution}")
