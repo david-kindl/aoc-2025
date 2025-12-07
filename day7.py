@@ -17,30 +17,28 @@ def get_data(io: str, mode: Literal["file", "text"]="file") -> tuple[list[str], 
 
 
 def solve(grid: list[str], start: int) -> tuple[int, int]:
-    hier = [{start: 1}]
-    curr_gen = 0
     split_count = 0
-    while curr_gen < len(grid) - 1:
-        next_gen = curr_gen + 1
-        n = {}
-        for key in hier[curr_gen].keys():
-            successor = grid[next_gen][key]
-            if successor == ".":
-                n.setdefault(key, 0)
-                n[key] += hier[curr_gen][key]
+    timelines = [{start: 1}]
+    curr_timeline = 0
+    while curr_timeline < len(grid) - 1:
+        timeline = {}
+        for key in timelines[curr_timeline].keys():
+            next_timeline = grid[curr_timeline + 1][key]
+            if next_timeline == ".":
+                timeline.setdefault(key, 0)
+                timeline[key] += timelines[curr_timeline][key]
             else:
                 split_count += 1
-                n.setdefault(key - 1, 0)
-                n[key - 1] += hier[curr_gen][key]
-                n.setdefault(key + 1, 0)
-                n[key + 1] += hier[curr_gen][key]
-        hier.append(n)
-        curr_gen += 1
-    route_count = sum(val for val in hier[-1].values())
-    return split_count, route_count
+                timeline.setdefault(key - 1, 0)
+                timeline[key - 1] += timelines[curr_timeline][key]
+                timeline.setdefault(key + 1, 0)
+                timeline[key + 1] += timelines[curr_timeline][key]
+        timelines.append(timeline)
+        curr_timeline += 1
+    timeline_count = sum(val for val in timelines[-1].values())
+    return split_count, timeline_count
 
 
 if __name__ == "__main__":
-    grid, start = get_data(argv[1:])
-    for part, solution in enumerate(solve(grid, start), 1):
+    for part, solution in enumerate(solve(*get_data(*argv[1:])), 1):
         print(f"part {part}: {solution}")
