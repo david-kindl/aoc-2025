@@ -1,5 +1,6 @@
-from collections import defaultdict, deque
-from tokenize import group
+from collections import OrderedDict
+from itertools import combinations
+
 
 TEST = """162,817,812
 57,618,57
@@ -30,8 +31,16 @@ def euclidean_distance(p, q) -> int:
         raise ValueError(f"Length of {p} and {q} are not equal.")
 
 
+def get_distance_rank(boxes, n: int):
+    distances = {}
+    for box1, box2 in combinations(boxes, 2):
+        distance = euclidean_distance(box1, box2)
+        distances[distance] = sorted([box1, box2])
+    return OrderedDict(sorted(distances.items())[:n])
 
 
 if __name__ == "__main__":
     junction_boxes = {tuple(map(int, box.split(","))) for box in TEST.split("\n")}
-
+    d = get_distance_rank(junction_boxes, 10)
+    for k, v in d.items():
+        print(k, v)
