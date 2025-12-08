@@ -30,46 +30,8 @@ def euclidean_distance(p, q) -> int:
         raise ValueError(f"Length of {p} and {q} are not equal.")
 
 
-def get_connections(boxes: set[tuple[int, ...]]) -> dict[tuple, tuple[tuple, float]]:
-    conn = {}
-    for box in junction_boxes:
-        for other_box in junction_boxes:
-            if box != other_box:
-                dist = euclidean_distance(box, other_box)
-                conn.setdefault(box, (other_box, dist))
-                if conn[box][1] > dist:
-                    conn[box] = (other_box, dist)
-    return conn
-
-
-def get_graph(conn: dict[tuple, tuple[tuple, float]]) -> defaultdict[tuple[int, ...], set[tuple[int, ...]]]:
-    graph = defaultdict(set)
-    for a, b in conn.items():
-        graph[a].add(b[0])
-        graph[b[0]].add(a)
-    return graph
-
-
-def bfs(graph):
-    visited = set()
-    circuits = []
-    for node in graph:
-        if node not in visited:
-            queue = deque([node])
-            circuit = set()
-
-            while queue:
-                n = queue.popleft()
-                if n in visited:
-                    continue
-                visited.add(n)
-                circuit.add(n)
-                queue.extend(graph[n])
-            circuits.append(circuit)
-    return circuits
 
 
 if __name__ == "__main__":
     junction_boxes = {tuple(map(int, box.split(","))) for box in TEST.split("\n")}
-    connections = get_connections(junction_boxes)
-    print(sorted([(k, v) for k, v in connections.items()], key=lambda x: x[1][1]))
+
